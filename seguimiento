@@ -1,0 +1,9 @@
+REPORTES
+Agregar filtros para buscar reportes por fecha, ubicación o estado.
+Crear la página de detalles de un reporte (/reports/:id).
+Agregar botones para cambiar el estado o eliminar reportes (solo admins).
+Exportar datos a CSV o PDF
+Agregar el sistema de comentarios con adjuntos a cada reporte
+Implementar notificaciones por email o en la web
+Mostrar los reportes en un mapa interactivo (como Leaflet)
+

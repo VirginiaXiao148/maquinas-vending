@@ -51,6 +51,32 @@ export default function ReportsPage() {
         },
     };
 
+    const exportToCSV = () => {
+        const headers = ['ID', 'Máquina', 'Ubicación', 'Problema', 'Estado', 'Fecha'];
+        
+        const rows = filteredReports.map(report => [
+            report.id,
+            report.machine,
+            report.location,
+            report.issue,
+            report.status,
+            new Date(report.created_at).toLocaleDateString()
+        ]);
+      
+        const csvContent =
+            [headers, ...rows]
+            .map(row => row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(','))
+            .join('\n');
+      
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+      
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'reportes.csv');
+        link.click();
+    };
+
     // Abre el modal con los datos del reporte seleccionado
     const handleEdit = (report: Report) => {
         setEditData(report);
@@ -191,6 +217,14 @@ export default function ReportsPage() {
                     <option value="en proceso" className="text-black">En proceso</option>
                     <option value="resuelto" className="text-black">Resuelto</option>
                 </select>
+
+                {/* Botón de descarga */}
+                <button
+                    onClick={exportToCSV}
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                    Exportar CSV
+                </button>
             </div>
 
             {/* Tabla de reportes */}

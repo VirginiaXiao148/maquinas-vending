@@ -186,16 +186,16 @@ export default function ReportsPage() {
                 value={searchStatus}
                 onChange={(e) => setSearchStatus(e.target.value)}
                 >
-                <option value="">Todos</option>
-                <option value="pendiente">Pendiente</option>
-                <option value="en proceso">En proceso</option>
-                <option value="resuelto">Resuelto</option>
+                    <option value="">Todos</option>
+                    <option value="pendiente" className="text-black">Pendiente</option>
+                    <option value="en proceso" className="text-black">En proceso</option>
+                    <option value="resuelto" className="text-black">Resuelto</option>
                 </select>
             </div>
 
             {/* Tabla de reportes */}
-            <table className="w-full border-collapse border border-gray-300">
-                <thead>
+            <table className="w-full border-collapse border border-gray-300 text-sm text-gray-800">
+                <thead className="bg-gray-200 text-gray-900">
                     <tr className="bg-gray-200">
                         <th className="border p-2">ID</th>
                         <th className="border p-2">Máquina</th>
@@ -206,7 +206,7 @@ export default function ReportsPage() {
                         <th className="border p-2">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="bg-white text-gray-800">
                     {filteredReports.map((report) => (
                         <tr key={report.id} className="text-center border-b">
                             <td className="border p-2">{report.id}</td>

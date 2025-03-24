@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import toast from 'react-hot-toast';
 import { Dialog } from '@headlessui/react';
 
 type Comment = {
@@ -33,6 +34,23 @@ export default function ReportsPage() {
     const [newComment, setNewComment] = useState('');
     const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
 
+    const toastStyles = {
+        success: {
+            background: '#004080',
+            color: '#fff',
+            border: '1px solid #0070f3',
+            borderRadius: '8px',
+            padding: '12px 16px',
+        },
+        error: {
+            background: '#8B0000',
+            color: '#fff',
+            border: '1px solid #ff4d4f',
+            borderRadius: '8px',
+            padding: '12px 16px',
+        },
+    };
+
     // Abre el modal con los datos del reporte seleccionado
     const handleEdit = (report: Report) => {
         setEditData(report);
@@ -41,50 +59,73 @@ export default function ReportsPage() {
 
     // Guarda cambios
     const handleUpdate = async () => {
-    if (!editData) return;
-    await fetch(`/api/reports/${editData.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editData),
-    });
-
-    // Actualizar lista
-    const updated = reports.map(r => r.id === editData.id ? editData : r);
-    setReports(updated);
-    setIsOpen(false);
+        if (!editData) return;
+      
+        const loadingToast = toast.loading("Guardando cambios...");
+      
+        try {
+            await fetch(`/api/reports/${editData.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(editData),
+            });
+      
+            const updated = reports.map(r => r.id === editData.id ? editData : r);
+            setReports(updated);
+            setIsOpen(false);
+      
+            toast.success("Reporte actualizado correctamente", {
+                id: loadingToast,
+                duration: 3000,
+                style: toastStyles.success,
+            });
+        } catch (error) {
+            toast.error("Error al guardar cambios", { id: loadingToast, style: toastStyles.error });
+        }
     };
 
     // Eliminar reporte
     const handleDelete = async (id: number) => {
         if (confirm("¿Estás seguro de que quieres eliminar este reporte?")) {
-            await fetch(`/api/reports/${id}`, {
-                method: "DELETE",
-            });
-            setReports(reports.filter((r) => r.id !== id));
+            const deletingToast = toast.loading("Eliminando...");
+        
+            try {
+                await fetch(`/api/reports/${id}`, { method: "DELETE" });
+                setReports(reports.filter((r) => r.id !== id));
+        
+                toast.success("Reporte eliminado", { id: deletingToast, style: toastStyles.success });
+            } catch (err) {
+                toast.error("Error al eliminar", { id: deletingToast, style: toastStyles.error });
+            }
         }
     };
 
     const handleAddComment = async () => {
         if (!editData || !newComment) return;
-
+      
+        const commentToast = toast.loading("Enviando comentario...");
+      
         const formData = new FormData();
         formData.append('report_id', editData.id.toString());
         formData.append('comment', newComment);
         if (attachmentFile) formData.append('attachment', attachmentFile);
-
-        const res = await fetch('/api/comments', {
-            method: 'POST',
-            body: formData,
-        });
-
-        const added = await res.json();
       
-        // Refrescar desde la API por si hubo otros cambios
-        const refreshed = await fetch(`/api/reports/${editData.id}`).then(res => res.json());
+        try {
+            const res = await fetch('/api/comments', {
+                method: 'POST',
+                body: formData,
+            });
       
-        setEditData(refreshed);
-        setNewComment('');
-        setAttachmentFile(null);
+            const added = await res.json();
+            const refreshed = await fetch(`/api/reports/${editData.id}`).then(res => res.json());
+            setEditData(refreshed);
+            setNewComment('');
+            setAttachmentFile(null);
+        
+            toast.success("Comentario añadido", { id: commentToast, style: toastStyles.success });
+        } catch (err) {
+            toast.error("Error al añadir comentario", { id: commentToast, style: toastStyles.error });
+        }
     };
 
     useEffect(() => {

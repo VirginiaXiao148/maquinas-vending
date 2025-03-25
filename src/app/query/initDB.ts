@@ -14,15 +14,23 @@ export function createTables() {
     `).run();
 
     db.prepare(`
+        CREATE TABLE IF NOT EXISTS machines (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        );
+    `).run();
+
+    db.prepare(`
         CREATE TABLE IF NOT EXISTS reports (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            machine_id TEXT NOT NULL,
+            machine_id INTEGER,
             location TEXT NOT NULL,
             issue TEXT NOT NULL,
             status TEXT CHECK(status IN ('pendiente', 'en proceso', 'resuelto')) DEFAULT 'pendiente',
             solution TEXT,
             cost REAL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            FOREIGN KEY(report_id) REFERENCES machines(id) ON DELETE CASCADE
         );
     `).run();
 

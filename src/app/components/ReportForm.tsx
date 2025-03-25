@@ -47,7 +47,10 @@ export default function ReportForm() {
                 <option value="Falta de vasos">Falta de vasos</option>
                 <option value="Falta de café">Falta de café</option>
                 <option value="Air-break">Air-break</option>
-                {/* Añade los demás según el manual */}
+                <option value="Contador volumétrico">Contador volumétrico</option>
+                <option value="Falta de leche">Falta de leche</option>
+                <option value="Falta de azúcar">Falta de azúcar</option>
+                <option value="Falta de chocolate">Falta de chocolate</option>
             </select>
 
             <textarea

@@ -29,8 +29,8 @@ export function createTables() {
             status TEXT CHECK(status IN ('pendiente', 'en proceso', 'resuelto')) DEFAULT 'pendiente',
             solution TEXT,
             cost REAL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            FOREIGN KEY(report_id) REFERENCES machines(id) ON DELETE CASCADE
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(machine_id) REFERENCES machines(id) ON DELETE CASCADE
         );
     `).run();
 
